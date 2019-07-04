@@ -9,7 +9,7 @@ A language model captures **the distribution over all possible sentences**.
 
 It is _unsupervised learning_. In this repo, we turn this into a _sequence of supervised learning_.
 
-## Corpus
+## Build Corpus
 ### Wikipedia 
 Wikipedia regularly distributes the entire document. You can download Korean Wikipedia dump [here](https://dumps.wikimedia.org/kowiki/) (and English Wikipedia dump [here](https://dumps.wikimedia.org/enwiki/)).
 Wikipedia recommends using `pages-articles.xml.bz2`, which includes only the latest version of the entire document, and is approximately 600 MB compressed (for English, `pages-articles-multistream.xml.bz2`).
@@ -27,15 +27,25 @@ The downloaded dump using above shell script is in XML format, and we need to pa
 
 example:
 ```
+$ git clone https://github.com/attardi/wikiextractor
 $ python wikiextractor/WikiExtractor.py kowiki-latest-pages-articles.xml
 
 $ head -n 4 text/AA/wiki_02
-# <doc id="577" url="https://ko.wikipedia.org/wiki?curid=577" title="천문학">
-# 천문학
-#
-# 천문학(天文學, )은 별이나 행성, 혜성, 은하와 같은 천체와, 지구 대기의 ..
-# ...
-# </doc>
+>> <doc id="577" url="https://ko.wikipedia.org/wiki?curid=577" title="천문학">
+>> 천문학
+>>
+>> 천문학(天文學, )은 별이나 행성, 혜성, 은하와 같은 천체와, 지구 대기의 ..
+>> ...
+>> </doc>
+```
+
+The extracted text is saved as text file of a certain size. To combine these, use `build_corpus.py`.
+
+example:
+```
+$ python build_corpus.py > corpus.txt
+$ wc corpus.txt 
+>> 4277241  55568030 596460787 corpus.txt
 ```
 
 ## Reference
