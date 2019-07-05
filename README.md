@@ -9,8 +9,7 @@ A language model captures **the distribution over all possible sentences**.
 
 It is _unsupervised learning_. In this repo, we turn this into a _sequence of supervised learning_.
 
-## Build Corpus
-### Wikipedia 
+## Build Corpus (Wikipedia)
 Wikipedia regularly distributes the entire document. You can download Korean Wikipedia dump [here](https://dumps.wikimedia.org/kowiki/) (and English Wikipedia dump [here](https://dumps.wikimedia.org/enwiki/)).
 Wikipedia recommends using `pages-articles.xml.bz2`, which includes only the latest version of the entire document, and is approximately 600 MB compressed (for English, `pages-articles-multistream.xml.bz2`).
 
@@ -39,7 +38,7 @@ $ head -n 4 text/AA/wiki_02
 >> </doc>
 ```
 
-The extracted text is saved as text file of a certain size. To combine these, use `build_corpus.py`.
+The extracted text is saved as text file of a certain size. To combine these, use `build_corpus.py`. The output `corpus.txt` contains _4,277,241 sentences, 55,568,030 words_.
 
 example:
 ```
@@ -47,6 +46,23 @@ $ python build_corpus.py > corpus.txt
 $ wc corpus.txt 
 >> 4277241  55568030 596460787 corpus.txt
 ```
+
+## Preprocessing
+
+### Build Vocab
+
+example:
+```
+$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl
+```
+
+example:
+```
+$ python tokenizer.py --corpus build_corpus/corpus.txt --tokenizer mecab > build_corpus/tokenized_corpus.txt
+$ wc build_corpus/tokenized_corpus.txt 
+>> 4277241 124065001 664959628 build_corpus/tokenized_corpus.txt
+```
+
 
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
