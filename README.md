@@ -54,6 +54,8 @@ $ wc corpus.txt
 example:
 ```
 $ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl
+Vocabulary size:  646581
+Vocabulary saved to vocab.pkl
 ```
 
 example:
