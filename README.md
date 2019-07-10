@@ -2,12 +2,26 @@
 Generalized Pre-training for Language Understanding 
 
 ## Overview
-### Language Modeling
+### Language Modeling (LM)
 A language model captures **the distribution over all possible sentences**.
 - Input : a sentence
 - Output : the probability of the input sentence
 
 It is _unsupervised learning_. In this repo, we turn this into a _sequence of supervised learning_.
+
+### Autoregressive LM
+The Autoregressive language model looks at the previous token and predicts the next token.
+ELMo, GPT RNNLM are typically the case.
+
+<br>
+<p align="center">
+<img width="500" src="https://storage.googleapis.com/deepmind-live-cms/documents/BlogPost-Fig2-Anim-160908-r01.gif" align="middle">
+</p>
+<br>
+
+Because Autoregressive LM should be forward or backward, only one-way(uni-directional) context information can be used.
+Therefore, it's difficult to understand the context in both directions(bi-directional).
+
 
 ## Build Corpus (Wikipedia)
 Wikipedia regularly distributes the entire document. You can download Korean Wikipedia dump [here](https://dumps.wikimedia.org/kowiki/) (and English Wikipedia dump [here](https://dumps.wikimedia.org/enwiki/)).
