@@ -9,11 +9,18 @@ def argparser():
     p.add_argument('--vocab', required=True)
     p.add_argument('--is_tokenized', action='store_true')
     p.add_argument('--tokenizer', default='mecab')
+    p.add_argument('--unk_token', default='<unk>', type=str)
+    p.add_argument('--pad_token', default='<pad>', type=str)
+    p.add_argument('--bos_token', default='<bos>', type=str)
+    p.add_argument('--eos_token', default='<eos>', type=str)
+    p.add_argument('--min_freq', default=1, type=int)
 
     config = p.parse_args()
     return config
 
 def main(config):
+    print(config)
+    
     list_of_tokens = []
     if config.is_tokenized:
         # read tokens
@@ -32,14 +39,19 @@ def main(config):
                 list_of_tokens += tokenizer.tokenize(line.strip())
 
     # build vocabulary                
-    vocab = Vocab(list_of_tokens=list_of_tokens)
+    vocab = Vocab(list_of_tokens=list_of_tokens,
+                  unk_token=config.unk_token,
+                  pad_token=config.pad_token,
+                  bos_token=config.bos_token,
+                  eos_token=config.eos_token,
+                  min_freq=config.min_freq)
     vocab.build()
     print('Vocabulary size: ', len(vocab))
 
     # save vocabulary
     with open(config.vocab, 'wb') as writer:
         pickle.dump(vocab, writer)
-    print('Vocabulary saved to ', config.vocab)
+    print('Vocabulary saved to', config.vocab)
 
 if __name__=='__main__':
     config = argparser()
