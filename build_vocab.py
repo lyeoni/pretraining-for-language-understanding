@@ -1,6 +1,6 @@
 import argparse
 import pickle
-from tokenizer import Vocab, Tokenizer
+from tokenization import Vocab, Tokenizer
 
 def argparser():
     p = argparse.ArgumentParser()
