@@ -9,11 +9,18 @@ def argparser():
     p.add_argument('--vocab', required=True)
     p.add_argument('--is_tokenized', action='store_true')
     p.add_argument('--tokenizer', default='mecab')
-    p.add_argument('--unk_token', default='<unk>', type=str)
-    p.add_argument('--pad_token', default='<pad>', type=str)
-    p.add_argument('--bos_token', default='<bos>', type=str)
-    p.add_argument('--eos_token', default='<eos>', type=str)
-    p.add_argument('--min_freq', default=1, type=int)
+    p.add_argument('--unk_token', default='<unk>', type=str,
+                   help='The representation for any unknown token')
+    p.add_argument('--pad_token', default='<pad>', type=str,
+                   help='The representation for the special token of padding token')
+    p.add_argument('--bos_token', default='<bos>', type=str,
+                   help='The representation for the special token of beginning-of-sequence token')
+    p.add_argument('--eos_token', default='<eos>', type=str,
+                   help='The representation for the special token of end-of-sequence token')
+    p.add_argument('--min_freq', default=3, type=int,
+                   help='The minimum frequency required for a token')
+    p.add_argument('--lower', action='store_true',
+                   help='Whether to convert the texts to lowercase')
 
     config = p.parse_args()
     return config
@@ -44,7 +51,8 @@ def main(config):
                   pad_token=config.pad_token,
                   bos_token=config.bos_token,
                   eos_token=config.eos_token,
-                  min_freq=config.min_freq)
+                  min_freq=config.min_freq,
+                  lower=config.lower)
     vocab.build()
     print('Vocabulary size: ', len(vocab))
 

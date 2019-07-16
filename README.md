@@ -67,14 +67,14 @@ $ wc corpus.txt
 
 example:
 ```
-$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl
-Namespace(bos_token='<bos>', corpus='build_corpus/corpus.txt', eos_token='<eos>', is_tokenized=False, min_freq=1, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
-Vocabulary size:  646581
+python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl --lower
+Namespace(bos_token='<bos>', corpus='build_corpus/corpus.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=1, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
+Vocabulary size:  608221
 Vocabulary saved to vocab.pkl
 
-$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl --min_freq 3
-...
-Vocabulary size:  306144
+$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl --min_freq 3 --lower
+Namespace(bos_token='<bos>', corpus='build_corpus/corpus.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
+Vocabulary size:  297773
 Vocabulary saved to vocab.pkl
 ```
 
