@@ -59,8 +59,20 @@ example:
 $ python build_corpus.py > corpus.txt
 $ wc corpus.txt 
 4277241  55568030 596460787 corpus.txt
+$ 
 ```
 
+Now, you need to split the corpus to train-set and test-set.
+
+```
+$ cat corpus.txt | shuf > corpus.shuf.txt
+$ head -n 855448 corpus.shuf.txt > corpus.test.txt
+$ tail -n 3421793 corpus.shuf.txt > corpus.train.txt
+$ wc -l corpus.train.txt corpus.test.txt
+  3421793 corpus.train.txt
+   855448 corpus.test.txt
+  4277241 합계
+```
 ## Preprocessing
 
 ### Build Vocab
@@ -78,14 +90,8 @@ Vocabulary size:  297773
 Vocabulary saved to vocab.pkl
 ```
 
+## Training
 
-
-example:
-```
-$ python tokenizer.py --corpus build_corpus/corpus.txt --tokenizer mecab > build_corpus/tokenized_corpus.txt
-$ wc build_corpus/tokenized_corpus.txt 
->> 4277241 124065001 664959628 build_corpus/tokenized_corpus.txt
-```
 
 
 ## Reference

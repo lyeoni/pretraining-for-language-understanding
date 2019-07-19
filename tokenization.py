@@ -43,7 +43,7 @@ class Vocab(object):
         return len(self.stoi)
 
 class Tokenizer(object):
-    def __init__(self, tokenization_fn, vocab=None, max_seq_length=384):
+    def __init__(self, tokenization_fn, vocab=None, max_seq_length=128):
         self.tokenization_fn = tokenization_fn
         self.vocab = vocab
         self.max_seq_length = max_seq_length
@@ -66,7 +66,9 @@ class Tokenizer(object):
             # add padding token
             if self.vocab.pad_token and len(tokens) < self.max_seq_length:
                 tokens += [self.vocab.pad_token] * (self.max_seq_length-len(tokens))
-        
+            elif self.vocab.pad_token and len(tokens) >= self.max_seq_length:
+                tokens = tokens[:self.max_seq_length]
+
         return tokens
     
     def transform(self, tokens):
