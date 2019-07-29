@@ -76,17 +76,15 @@ $ wc -l corpus.train.txt corpus.test.txt
 ## Preprocessing
 
 ### Build Vocab
+Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030 words, and 608,221 unique words_. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains _297,773 unique words_.
+
+Here we use the train corpus `corpus.train.txt` to build vocabulary.
 
 example:
 ```
-$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl --lower
-Namespace(bos_token='<bos>', corpus='build_corpus/corpus.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=1, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
-Vocabulary size:  608221
-Vocabulary saved to vocab.pkl
-
-$ python build_vocab.py --corpus build_corpus/corpus.txt --vocab vocab.pkl --min_freq 3 --lower
-Namespace(bos_token='<bos>', corpus='build_corpus/corpus.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
-Vocabulary size:  297773
+$ python build_vocab.py --corpus build_corpus/corpus.train.txt --vocab vocab.pkl --min_freq 3 --lower
+Namespace(bos_token='<bos>', corpus='build_corpus/corpus.train.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
+Vocabulary size:  271503
 Vocabulary saved to vocab.pkl
 ```
 
