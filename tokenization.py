@@ -11,7 +11,7 @@ class Vocab(object):
         self.lower = lower
         self.stoi, self.itos, self.freqs = {}, {}, {}
 
-        # vocab
+        # initialize with special tokens
         for sti, special_token in enumerate([self.unk_token, self.bos_token, self.eos_token, self.pad_token]):
              if special_token: 
                  self.stoi[special_token] = sti
@@ -21,26 +21,25 @@ class Vocab(object):
         # if the token doesn't appear in the vocabulary at least once
         for ti, token in enumerate(self.list_of_tokens):
             # lowercase the token
-            if self.lower:
-                token = token.lower()
-
-            if token not in self.stoi.keys():
-                self.itos[self.__len__()] = token
-                self.stoi[token] = self.__len__()
+            if self.lower: token = token.lower()
+            if token not in self.freqs.keys():
                 self.freqs[token] = 1
             else:
                 self.freqs[token] += 1
         
         # sort by frequency in 'descending' order
         self.freqs = dict(sorted(self.freqs.items(), key=lambda x: x[1], reverse=True))
+        
         # minimum frequency required for a token
+        unique_tokens = []
         for token, freq in self.freqs.items():
-            if freq < self.min_freq:
-                del self.itos[self.stoi[token]]
-                del self.stoi[token]
+            if freq >= self.min_freq:
+                unique_tokens.append(token)
 
-    def __len__(self):
-        return len(self.stoi)
+        # build vocab
+        for token in unique_tokens:
+            self.itos[self.__len__()] = token
+            self.stoi[token] = self.__len__()
 
 class Tokenizer(object):
     def __init__(self, tokenization_fn, vocab=None, max_seq_length=128):

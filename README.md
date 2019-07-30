@@ -82,10 +82,11 @@ Here we use the train corpus `corpus.train.txt` to build vocabulary.
 
 example:
 ```
-$ python build_vocab.py --corpus build_corpus/corpus.train.txt --vocab vocab.pkl --min_freq 3 --lower
-Namespace(bos_token='<bos>', corpus='build_corpus/corpus.train.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.pkl')
+$ python build_vocab.py --corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --min_freq 3 --lower
+Namespace(bos_token='<bos>', corpus='build_corpus/corpus.train.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.train.pkl')
 Vocabulary size:  271503
-Vocabulary saved to vocab.pkl
+Vocabulary saved to vocab.train.pkl
+
 ```
 
 ## Training
