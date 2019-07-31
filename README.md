@@ -59,7 +59,6 @@ example:
 $ python build_corpus.py > corpus.txt
 $ wc corpus.txt 
 4277241  55568030 596460787 corpus.txt
-$ 
 ```
 
 Now, you need to split the corpus to train-set and test-set.
@@ -79,6 +78,7 @@ $ wc -l corpus.train.txt corpus.test.txt
 Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030 words, and 608,221 unique words_. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains _297,773 unique words_.
 
 Here we use the train corpus `corpus.train.txt` to build vocabulary.
+The vocabulary built by train corpus contains **_557,627_** unique words, and **_271,503_** unique words that appear at least three times.
 
 example:
 ```
@@ -86,12 +86,17 @@ $ python build_vocab.py --corpus build_corpus/corpus.train.txt --vocab vocab.tra
 Namespace(bos_token='<bos>', corpus='build_corpus/corpus.train.txt', eos_token='<eos>', is_tokenized=False, lower=True, min_freq=3, pad_token='<pad>', tokenizer='mecab', unk_token='<unk>', vocab='vocab.train.pkl')
 Vocabulary size:  271503
 Vocabulary saved to vocab.train.pkl
-
 ```
+
+Since the vocab file is too large(~1.3GB) to upload on Github, I uploaded it to Google Drive.
+you can download vocab file `vocab.train.pkl` in [here](https://drive.google.com/file/d/195kdXPQtiG0eqppH-L2VKoHAcgqCSR1l/view?usp=sharing).
 
 ## Training
 
+```
+```
 
+## Evaluation
 
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
