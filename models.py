@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
 
-class RNNLM(nn.Module):
+class LSTMLM(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, output_size, 
                  n_layers, dropout_p, is_bidirectional, device):
 
-        super(RNNLM, self).__init__()
+        super(LSTMLM, self).__init__()
         
         self.input_size = input_size
         self.embedding_size = embedding_size
