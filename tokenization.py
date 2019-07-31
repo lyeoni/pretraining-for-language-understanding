@@ -21,7 +21,10 @@ class Vocab(object):
         # if the token doesn't appear in the vocabulary at least once
         for ti, token in enumerate(self.list_of_tokens):
             # lowercase the token
-            if self.lower: token = token.lower()
+            if self.lower:
+                token = token.lower()
+            
+            # counter the frequencies of tokens in whole list of tokens
             if token not in self.freqs.keys():
                 self.freqs[token] = 1
             else:
@@ -36,10 +39,13 @@ class Vocab(object):
             if freq >= self.min_freq:
                 unique_tokens.append(token)
 
-        # build vocab
+        # build vocab mapping tokens to numerical index
         for token in unique_tokens:
             self.itos[self.__len__()] = token
             self.stoi[token] = self.__len__()
+        
+    def __len__(self):
+        return len(self.stoi)
 
 class Tokenizer(object):
     def __init__(self, tokenization_fn, vocab=None, max_seq_length=128):
