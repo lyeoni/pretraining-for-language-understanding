@@ -72,10 +72,11 @@ $ wc -l corpus.train.txt corpus.test.txt
    855448 corpus.test.txt
   4277241 합계
 ```
+ 
 ## Preprocessing
 
 ### Build Vocab
-Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030 words, and 608,221 unique words_. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains _297,773 unique words_.
+Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030_ words, and _608,221_ unique words. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains **_297,773_** unique words.
 
 Here we use the train corpus `corpus.train.txt` to build vocabulary.
 The vocabulary built by train corpus contains **_557,627_** unique words, and **_271,503_** unique words that appear at least three times.
@@ -149,4 +150,6 @@ Namespace(batch_size=24, dropout_p=0.2, embedding_size=256, epochs=10, hidden_si
 
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
+- [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
+, [Issue: How to use the DataParallelCriterion ,DataParallelModel](https://github.com/zhanghang1989/PyTorch-Encoding/issues/54)
 - [Google DeepMind] [WaveNet: A Generative Model for Raw Audio](https://deepmind.com/blog/wavenet-generative-model-raw-audio/)

@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class LSTMLM(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, output_size, 
-                 n_layers, dropout_p, is_bidirectional, device):
+                 n_layers, dropout_p, is_bidirectional):
 
         super(LSTMLM, self).__init__()
         
@@ -14,7 +14,6 @@ class LSTMLM(nn.Module):
         self.n_layers = n_layers
         self.dropout_p = dropout_p
         self.is_bidirectional = is_bidirectional
-        self.device = device
 
         # layers
         self.embedding = nn.Embedding(input_size, embedding_size)
