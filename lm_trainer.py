@@ -9,9 +9,6 @@ from torch.utils.data import DataLoader
 from models import LSTMLM
 from tqdm import tqdm
 
-# Device configuration
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 def argparser():
     p = argparse.ArgumentParser()
 
@@ -27,17 +24,21 @@ def argparser():
                    help='Whether the corpus is already tokenized')
     p.add_argument('--tokenizer', default='mecab', type=str,
                    help='Tokenizer used for input corpus tokenization')
-    p.add_argument('--max_seq_len', default=32, type=int,
+    p.add_argument('--max_seq_len', default=64, type=int,
                    help='The maximum total input sequence length after tokenization')
 
     # Train parameters
+    p.add_argument('--multi_gpu_training', action='store_true',
+                   help='Whether to training with multiple GPU')
+    p.add_argument('--cuda', default=True, type=bool,
+                   help='Whether CUDA is currently available')
     p.add_argument('--epochs', default=10, type=int,
                    help='Total number of training epochs to perform')
-    p.add_argument('--batch_size', default=16, type=int,
+    p.add_argument('--batch_size', default=192, type=int,
                    help='Batch size for training')
-    p.add_argument('--shuffle', action='store_true',
-                   help='Wheter to shuffle input data')
-
+    p.add_argument('--shuffle', default=True, type=bool, 
+                   help='Whether to reshuffle at every epoch')
+        
     # Model parameters
     p.add_argument('--embedding_size', default=256, type=int,
                    help='Word embedding vector dimension')
@@ -47,44 +48,49 @@ def argparser():
                    help='Number of layers in LSTM')
     p.add_argument('--dropout_p', default=.2, type=float,
                    help='Dropout rate used for dropout layer in LSTM')
-    p.add_argument('--is_bidirectional', action='store_true',
+    p.add_argument('--is_bidirectional', default=True, type=bool, 
                    help='Whether to use bidirectional LSTM')
 
     config = p.parse_args()
     return config
 
 def train():
+    n_batches, n_samples = len(train_loader), len(train_loader.dataset)
+
     model.train()
     total_loss = 0
-
-    for bi, batch in enumerate(tqdm(train_loader)):
-        optimizer.zero_grad()
+    for iter_, batch in enumerate(tqdm(train_loader)):
         inputs, targets = batch
-        inputs, targets = inputs.to(device), targets.to(device)
-        # |inputs|, |targets| = (batch_size, seq_len)
+        if config.cuda:
+            inputs, targets = inputs.cuda(), targets.cuda()
+            # |inputs|, |targets| = (batch_size, seq_len)
 
-        # Take feed-forward
-        outputs = model(inputs)
-        # |outputs| = (batch_size, seq_len, vocab_len)
+        preds = model(inputs)
+        # |preds| = (batch_size, seq_len, vocab_len)
         
         loss = 0
         for i in range(config.max_seq_len-1):
-            loss += criterion(outputs[:,i], targets[:,i])
-        else:
-            loss /= config.batch_size
+            if config.multi_gpu_training:
+                _preds = [pred[:,i] for pred in preds]
+                loss += loss_fn(_preds, targets[:,i])
+                # |_preds| = [(batch_size/n_gpus, vocab_len), ...]
+                # len(_preds) = n_gpus
+            else:
+                loss += loss_fn(preds[:,i], targets[:,i])
         
-            total_loss += loss.item()
-
+        loss /= config.batch_size
+        total_loss += loss.item()
+        
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         
-        if bi % (len(train_loader)//300) == 0:
+        if iter_ % (n_batches//300) == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)] \tLoss: {:.6f}'.format(
-                epoch, bi*len(inputs), len(train_loader.dataset), 100.*bi/len(train_loader),
-                loss.item()))
+                    epoch, iter_, n_batches, 100.*iter_/n_batches, loss.item()))
 
     print('====> Train Epoch: {} Average loss: {:.4f}\t'.format(
-        epoch, total_loss / len(train_loader)))
+            epoch, total_loss/n_batches))
     
     # Save model
     torch.save(model.state_dict(), 'rnn_lm{}.pth'.format(epoch))
@@ -120,10 +126,18 @@ if __name__=='__main__':
                        output_size=len(vocab),
                        n_layers=config.n_layers,
                        dropout_p=config.dropout_p,
-                       is_bidirectional=config.is_bidirectional,
-                       device=device).to(device)
+                       is_bidirectional=config.is_bidirectional)
+    loss_fn = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token], reduction='sum')
     optimizer = optim.Adam(model.parameters())
-    criterion = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token], reduction='sum')
+    
+    if config.cuda:
+        if config.multi_gpu_training:
+            from parallel import DataParallelModel, DataParallelCriterion
+            model = DataParallelModel(model).cuda()
+            loss_fn = DataParallelCriterion(loss_fn).cuda()
+        else:
+            model = model.cuda()
+            loss_fn = loss_fn.cuda()
     print('=========MODEL=========\n',model)
 
     # Train
