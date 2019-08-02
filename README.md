@@ -138,6 +138,8 @@ optional arguments:
 
 ### Training with multiple GPU
 
+Below is the example command for training with multiple GPU. You can select your own parameter values via argument inputs. 
+
 example:
 ```
 $ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --test_corpus build_corpus/corpus.test.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu_training 
@@ -153,13 +155,6 @@ Namespace(batch_size=192, cuda=True, dropout_p=0.2, embedding_size=256, epochs=1
   )
 )
 ```
-
-<br>
-<p align="center">
-<img width="500" src="https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/images/multi_gpu_training.png" align="middle">
-</p>
-<br>
-
 
 ## Evaluation
 
