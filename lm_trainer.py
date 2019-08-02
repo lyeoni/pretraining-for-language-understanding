@@ -1,13 +1,15 @@
 import argparse
 import numpy as np
+from tqdm import tqdm
+
 import torch
 import torch.nn as nn
 from torch import optim
+from torch.utils.data import DataLoader
+
 from tokenization import Tokenizer, Vocab
 from dataset_utils import Corpus
-from torch.utils.data import DataLoader
 from models import LSTMLM
-from tqdm import tqdm
 
 def argparser():
     p = argparse.ArgumentParser()
@@ -24,7 +26,7 @@ def argparser():
                    help='Whether the corpus is already tokenized')
     p.add_argument('--tokenizer', default='mecab', type=str,
                    help='Tokenizer used for input corpus tokenization')
-    p.add_argument('--max_seq_len', default=64, type=int,
+    p.add_argument('--max_seq_len', default=32, type=int,
                    help='The maximum total input sequence length after tokenization')
 
     # Train parameters
