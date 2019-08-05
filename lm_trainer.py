@@ -30,7 +30,7 @@ def argparser():
                    help='The maximum total input sequence length after tokenization')
 
     # Train parameters
-    p.add_argument('--multi_gpu_training', action='store_true',
+    p.add_argument('--multi_gpu', action='store_true',
                    help='Whether to training with multiple GPU')
     p.add_argument('--cuda', default=True, type=bool,
                    help='Whether CUDA is currently available')
@@ -50,8 +50,6 @@ def argparser():
                    help='Number of layers in LSTM')
     p.add_argument('--dropout_p', default=.2, type=float,
                    help='Dropout rate used for dropout layer in LSTM')
-    p.add_argument('--is_bidirectional', default=True, type=bool, 
-                   help='Whether to use bidirectional LSTM')
 
     config = p.parse_args()
     return config
@@ -65,17 +63,17 @@ def train():
         inputs, targets = batch
         if config.cuda:
             inputs, targets = inputs.cuda(), targets.cuda()
-            # |inputs|, |targets| = (batch_size, seq_len)
+        # |inputs|, |targets| = (batch_size, max_seq_len-1)
 
         preds = model(inputs)
-        # |preds| = (batch_size, seq_len, vocab_len)
+        # |preds| = (batch_size, max_seq_len-1, len(vocab))
         
         loss = 0
         for i in range(config.max_seq_len-1):
-            if config.multi_gpu_training:
+            if config.multi_gpu:
                 _preds = [pred[:,i] for pred in preds]
                 loss += loss_fn(_preds, targets[:,i])
-                # |_preds| = [(batch_size/n_gpus, vocab_len), ...]
+                # |_preds| = [(batch_size/n_gpus, len(vocab)), ...] 
                 # len(_preds) = n_gpus
             else:
                 loss += loss_fn(preds[:,i], targets[:,i])
@@ -127,13 +125,12 @@ if __name__=='__main__':
                        hidden_size=config.hidden_size,
                        output_size=len(vocab),
                        n_layers=config.n_layers,
-                       dropout_p=config.dropout_p,
-                       is_bidirectional=config.is_bidirectional)
+                       dropout_p=config.dropout_p)
     loss_fn = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token], reduction='sum')
     optimizer = optim.Adam(model.parameters())
     
     if config.cuda:
-        if config.multi_gpu_training:
+        if config.multi_gpu:
             from parallel import DataParallelModel, DataParallelCriterion
             model = DataParallelModel(model).cuda()
             loss_fn = DataParallelCriterion(loss_fn).cuda()
