@@ -162,6 +162,23 @@ The models were trained with 4 * NVIDIA Tesla V100, and the number of epochs was
 
 ### Extrinsic evaluation
 
+#### Perplexity
+
+A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
+
+`Perplexity`: **_inverse probability of the given sentence, normalized by the number of words._** The reason why for using inverse probability is a way of normalizing for the sentence length.
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
+</p>
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
+</p>
+
+As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
+
+
 ### Intrinsic evaluation
 
 |Input sentence|Unidirectional-LSTM|
@@ -174,3 +191,4 @@ The models were trained with 4 * NVIDIA Tesla V100, and the number of epochs was
 - [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
 , [Issue: How to use the DataParallelCriterion, DataParallelModel](https://github.com/zhanghang1989/PyTorch-Encoding/issues/54)
 - [Google DeepMind] [WaveNet: A Generative Model for Raw Audio](https://deepmind.com/blog/wavenet-generative-model-raw-audio/)
+- [Dan Jurafsky] [CS 124: From Languages to Information at Stanford](https://web.stanford.edu/class/cs124/lec/languagemodeling2019.pdf)
