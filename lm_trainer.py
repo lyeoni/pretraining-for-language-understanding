@@ -93,7 +93,7 @@ def train():
             epoch, total_loss/n_batches))
     
     # Save model
-    torch.save(model.state_dict(), 'rnn_lm{}.pth'.format(epoch))
+    torch.save(model.state_dict(), '{}_lm{}.pth'.format(config.model_type.lower(), epoch))
 
 if __name__=='__main__':
     config = argparser()

@@ -158,6 +158,17 @@ Namespace(batch_size=192, cuda=True, dropout_p=0.2, embedding_size=256, epochs=1
 
 ## Evaluation
 
+The models were trained with 4 * NVIDIA Tesla V100, and the number of epochs was 10.
+
+### Extrinsic evaluation
+
+### Intrinsic evaluation
+
+|Input sentence|Unidirectional-LSTM|
+|------|------|
+|||
+
+
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
 - [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)

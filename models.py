@@ -29,15 +29,15 @@ class LSTMLM(nn.Module):
         # |input| = (batch_size, seq_len)
         
         embeds = self.embedding(input)
-        # |emb| = (batch_size, seq_len, embedding_size)
+        # |embeds| = (batch_size, seq_len, embedding_size)
         
         lstm_out, hidden = self.lstm(embeds)
         # |hidden[0]|, |hidden[1]| = (n_layers*n_directions, batch_size, hidden_size)
         # |lstm_out| = (batch_size, seq_len, hidden_size*n_directions)
         
         fc_out = self.fc2(self.fc(lstm_out))
-        # |fc_out| = (batch_size, seq_len, vocab_len)
+        # |fc_out| = (batch_size, seq_len, output_size)
         output = self.softmax(fc_out)
-        # |output| = (batch_size, seq_len, vocab_len)
+        # |output| = (batch_size, seq_len, output_size)
         
         return output

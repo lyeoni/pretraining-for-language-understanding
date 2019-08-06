@@ -1,5 +1,4 @@
 import argparse
-from tqdm import tqdm
 
 import torch
 from torch.utils.data import DataLoader
@@ -59,7 +58,7 @@ def sentence_from_indexes(indexes):
         first_eos_token_index = tokens.index(vocab.eos_token)
         return ' '.join(tokens[:first_eos_token_index])
     except ValueError:
-        # only if eos_token is not in the token list
+        # Only if eos_token is not in the token list
         return ' '.join(tokens)
 
 def inference():
@@ -131,5 +130,5 @@ if __name__=='__main__':
     model.load_state_dict(torch.load(config.model))
     print('=========MODEL=========\n',model)
 
-    # inference
+    # Inference
     inference()
