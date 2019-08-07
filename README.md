@@ -99,12 +99,12 @@ $ python lm_trainer.py -h
 usage: lm_trainer.py [-h] --train_corpus TRAIN_CORPUS --test_corpus
                      TEST_CORPUS --vocab VOCAB --model_type MODEL_TYPE
                      [--is_tokenized] [--tokenizer TOKENIZER]
-                     [--max_seq_len MAX_SEQ_LEN] [--multi_gpu_training]
-                     [--cuda CUDA] [--epochs EPOCHS] [--batch_size BATCH_SIZE]
-                     [--shuffle SHUFFLE] [--embedding_size EMBEDDING_SIZE]
+                     [--max_seq_len MAX_SEQ_LEN] [--multi_gpu] [--cuda CUDA]
+                     [--epochs EPOCHS] [--batch_size BATCH_SIZE]
+                     [--clip_value CLIP_VALUE] [--shuffle SHUFFLE]
+                     [--embedding_size EMBEDDING_SIZE]
                      [--hidden_size HIDDEN_SIZE] [--n_layers N_LAYERS]
                      [--dropout_p DROPOUT_P]
-                     [--is_bidirectional IS_BIDIRECTIONAL]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -119,11 +119,14 @@ optional arguments:
   --max_seq_len MAX_SEQ_LEN
                         The maximum total input sequence length after
                         tokenization
-  --multi_gpu_training  Whether to training with multiple GPU
+  --multi_gpu           Whether to training with multiple GPU
   --cuda CUDA           Whether CUDA is currently available
   --epochs EPOCHS       Total number of training epochs to perform
   --batch_size BATCH_SIZE
                         Batch size for training
+  --clip_value CLIP_VALUE
+                        Maximum allowed value of the gradients. The gradients
+                        are clipped in the range
   --shuffle SHUFFLE     Whether to reshuffle at every epoch
   --embedding_size EMBEDDING_SIZE
                         Word embedding vector dimension
@@ -132,8 +135,6 @@ optional arguments:
   --n_layers N_LAYERS   Number of layers in LSTM
   --dropout_p DROPOUT_P
                         Dropout rate used for dropout layer in LSTM
-  --is_bidirectional IS_BIDIRECTIONAL
-                        Whether to use bidirectional LSTM
 ```
 
 ### Training with multiple GPU
@@ -142,13 +143,13 @@ Below is the example command for training with multiple GPU. You can select your
 
 example:
 ```
-$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --test_corpus build_corpus/corpus.test.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu_training 
-Namespace(batch_size=192, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=512, is_bidirectional=True, is_tokenized=False, max_seq_len=32, model_type='LSTM', multi_gpu_training=True, n_layers=3, shuffle=True, test_corpus='build_corpus/corpus.test.txt', tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
+$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --test_corpus build_corpus/corpus.test.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu
+Namespace(batch_size=192, clip_value=10, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=1024, is_tokenized=False, max_seq_len=32, model_type='LSTM', multi_gpu=True, n_layers=3, shuffle=True, test_corpus='build_corpus/corpus.test.txt', tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
 =========MODEL=========
  DataParallelModel(
   (module): LSTMLM(
     (embedding): Embedding(271503, 256)
-    (lstm): LSTM(256, 512, num_layers=3, batch_first=True, dropout=0.2, bidirectional=True)
+    (lstm): LSTM(256, 1024, num_layers=3, batch_first=True, dropout=0.2)
     (fc): Linear(in_features=1024, out_features=512, bias=True)
     (fc2): Linear(in_features=512, out_features=271503, bias=True)
     (softmax): LogSoftmax()
