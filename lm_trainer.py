@@ -38,13 +38,15 @@ def argparser():
                    help='Total number of training epochs to perform')
     p.add_argument('--batch_size', default=192, type=int,
                    help='Batch size for training')
+    p.add_argument('--clip_value', default=10, type=int,
+                   help='Maximum allowed value of the gradients. The gradients are clipped in the range')
     p.add_argument('--shuffle', default=True, type=bool, 
                    help='Whether to reshuffle at every epoch')
         
     # Model parameters
     p.add_argument('--embedding_size', default=256, type=int,
                    help='Word embedding vector dimension')
-    p.add_argument('--hidden_size', default=512, type=int,
+    p.add_argument('--hidden_size', default=1024, type=int,
                    help='Hidden size of LSTM')
     p.add_argument('--n_layers', default=3, type=int,
                    help='Number of layers in LSTM')
@@ -58,39 +60,44 @@ def train():
     n_batches, n_samples = len(train_loader), len(train_loader.dataset)
 
     model.train()
-    total_loss = 0
+    total_loss, total_ppl = 0, 0
     for iter_, batch in enumerate(tqdm(train_loader)):
         inputs, targets = batch
         if config.cuda:
             inputs, targets = inputs.cuda(), targets.cuda()
         # |inputs|, |targets| = (batch_size, max_seq_len-1)
-
+        
         preds = model(inputs)
         # |preds| = (batch_size, max_seq_len-1, len(vocab))
         
-        loss = 0
-        for i in range(config.max_seq_len-1):
-            if config.multi_gpu:
-                _preds = [pred[:,i] for pred in preds]
-                loss += loss_fn(_preds, targets[:,i])
-                # |_preds| = [(batch_size/n_gpus, len(vocab)), ...] 
-                # len(_preds) = n_gpus
-            else:
-                loss += loss_fn(preds[:,i], targets[:,i])
+        if config.multi_gpu:
+            # If the model run parallelly using DataParallelModel,the output tensor size is as follows.
+            # |preds| = [(batch_size/n_gpus, max_seq_len-1, len(vocab))] * n_gpus
+            n_gpus = len(preds)
+            preds = [pred.view(config.batch_size//n_gpus*(config.max_seq_len-1), -1).contiguous() for pred in preds]
+            # |preds| = [(batch_size/n_gpus*(max_seq_len-1), len(vocab))] * n_gpus
+        else:
+            preds = preds.view(config.batch_size*(config.max_seq_len-1), -1).contiguous()    
+            # |preds| = (batch_size*(max_seq_len-1), len(vocab))
+
+        targets = targets.view(-1).contiguous()
+        # |targets| = (batch_size*(max_seq_len-1))
         
-        loss /= config.batch_size
+        loss = loss_fn(preds, targets)
         total_loss += loss.item()
+        total_ppl += np.exp(loss.item())
         
         optimizer.zero_grad()
         loss.backward()
+        nn.utils.clip_grad_norm_(model.parameters(), config.clip_value)
         optimizer.step()
         
         if iter_ % (n_batches//300) == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)] \tLoss: {:.6f}'.format(
-                    epoch, iter_, n_batches, 100.*iter_/n_batches, loss.item()))
+            print('Train Epoch: {} [{}/{} ({:.0f}%)] \tLoss: {:.4f} \tPerplexity: {:.5f}'.format(
+                    epoch, iter_, n_batches, 100.*iter_/n_batches, loss.item(), np.exp(loss.item())))
 
-    print('====> Train Epoch: {} Average loss: {:.4f}\t'.format(
-            epoch, total_loss/n_batches))
+    print('====> Train Epoch: {} Average loss: {:.4f} \tPerplexity: {:.5f}'.format(
+            epoch, total_loss/n_batches, total_ppl/n_batches))
     
     # Save model
     torch.save(model.state_dict(), '{}_lm{}.pth'.format(config.model_type.lower(), epoch))
@@ -126,7 +133,7 @@ if __name__=='__main__':
                        output_size=len(vocab),
                        n_layers=config.n_layers,
                        dropout_p=config.dropout_p)
-    loss_fn = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token], reduction='sum')
+    loss_fn = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token])
     optimizer = optim.Adam(model.parameters())
     
     if config.cuda:
