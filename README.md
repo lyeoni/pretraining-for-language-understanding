@@ -1,4 +1,7 @@
 # Pre-training For Language-Understanding
+[![LICENSE](https://img.shields.io/github/license/lyeoni/pretraining-for-language-understanding?style=flat-square)](https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/LICENSE)
+
+
 Generalized Pre-training for Language Understanding 
 
 ## Overview
@@ -178,7 +181,6 @@ A language model captures the distribution over all sentences. So, the best lang
 </p>
 
 As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
-
 
 ### Intrinsic evaluation
 
