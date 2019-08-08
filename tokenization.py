@@ -11,35 +11,35 @@ class Vocab(object):
         self.lower = lower
         self.stoi, self.itos, self.freqs = {}, {}, {}
 
-        # initialize with special tokens
+        # Initialize with special tokens
         for sti, special_token in enumerate([self.unk_token, self.bos_token, self.eos_token, self.pad_token]):
              if special_token: 
                  self.stoi[special_token] = sti
                  self.itos[sti] = special_token
 
     def build(self):
-        # if the token doesn't appear in the vocabulary at least once
+        # If the token doesn't appear in the vocabulary at least once
         for ti, token in enumerate(self.list_of_tokens):
-            # lowercase the token
+            # Lowercase the token
             if self.lower:
                 token = token.lower()
             
-            # counter the frequencies of tokens in whole list of tokens
+            # Count the frequencies of tokens in whole list of tokens
             if token not in self.freqs.keys():
                 self.freqs[token] = 1
             else:
                 self.freqs[token] += 1
         
-        # sort by frequency in 'descending' order
+        # Sort by frequency in 'descending' order
         self.freqs = dict(sorted(self.freqs.items(), key=lambda x: x[1], reverse=True))
         
-        # minimum frequency required for a token
+        # Minimum frequency required for a token
         unique_tokens = []
         for token, freq in self.freqs.items():
             if freq >= self.min_freq:
                 unique_tokens.append(token)
 
-        # build vocab mapping tokens to numerical index
+        # Build vocab mapping tokens to numerical index
         for token in unique_tokens:
             self.itos[self.__len__()] = token
             self.stoi[token] = self.__len__()
@@ -56,22 +56,24 @@ class Tokenizer(object):
     def tokenize(self, text):
         tokens = self.tokenization_fn(text)
         if self.vocab:
-            # lowercase the token
+            # Lowercase the token
             if self.vocab.lower:
                 tokens = [token.lower() for token in tokens]
             
-            # add beginning of sentence token
+            # Add beginning of sentence token
             if self.vocab.bos_token:
                 tokens = [self.vocab.bos_token] + tokens 
             
-            # add end of sentence token
+            # Add end of sentence token
             if self.vocab.eos_token:    
                 tokens = tokens + [self.vocab.eos_token]
             
-            # add padding token
+            # Add padding token
             if self.vocab.pad_token and len(tokens) < self.max_seq_length:
                 tokens += [self.vocab.pad_token] * (self.max_seq_length-len(tokens))
-            elif self.vocab.pad_token and len(tokens) >= self.max_seq_length:
+            
+            # Truncate to the maximum sequence length
+            if len(tokens) > self.max_seq_length:    
                 tokens = tokens[:self.max_seq_length]
 
         return tokens
