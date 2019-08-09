@@ -47,12 +47,11 @@ $ git clone https://github.com/attardi/wikiextractor
 $ python wikiextractor/WikiExtractor.py kowiki-latest-pages-articles.xml
 
 $ head -n 4 text/AA/wiki_02
->> <doc id="577" url="https://ko.wikipedia.org/wiki?curid=577" title="천문학">
->> 천문학
->>
->> 천문학(天文學, )은 별이나 행성, 혜성, 은하와 같은 천체와, 지구 대기의 ..
->> ...
->> </doc>
+<doc id="577" url="https://ko.wikipedia.org/wiki?curid=577" title="천문학">
+천문학
+
+천문학(天文學, )은 별이나 행성, 혜성, 은하와 같은 천체와, 지구 대기의 ..
+</doc>
 ```
 
 The extracted text is saved as text file of a certain size. To combine these, use `build_corpus.py`. The output `corpus.txt` contains _4,277,241 sentences, 55,568,030 words_.
@@ -99,8 +98,8 @@ you can download vocab file `vocab.train.pkl` in [here](https://drive.google.com
 
 ```
 $ python lm_trainer.py -h
-usage: lm_trainer.py [-h] --train_corpus TRAIN_CORPUS --test_corpus
-                     TEST_CORPUS --vocab VOCAB --model_type MODEL_TYPE
+usage: lm_trainer.py [-h] --train_corpus TRAIN_CORPUS --vocab VOCAB
+                     --model_type MODEL_TYPE [--test_corpus TEST_CORPUS]
                      [--is_tokenized] [--tokenizer TOKENIZER]
                      [--max_seq_len MAX_SEQ_LEN] [--multi_gpu] [--cuda CUDA]
                      [--epochs EPOCHS] [--batch_size BATCH_SIZE]
@@ -112,10 +111,10 @@ usage: lm_trainer.py [-h] --train_corpus TRAIN_CORPUS --test_corpus
 optional arguments:
   -h, --help            show this help message and exit
   --train_corpus TRAIN_CORPUS
-  --test_corpus TEST_CORPUS
   --vocab VOCAB
   --model_type MODEL_TYPE
                         Model type selected in the list: LSTM
+  --test_corpus TEST_CORPUS
   --is_tokenized        Whether the corpus is already tokenized
   --tokenizer TOKENIZER
                         Tokenizer used for input corpus tokenization
@@ -146,8 +145,8 @@ Below is the example command for training with multiple GPU. You can select your
 
 example:
 ```
-$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --test_corpus build_corpus/corpus.test.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu
-Namespace(batch_size=192, clip_value=10, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=1024, is_tokenized=False, max_seq_len=32, model_type='LSTM', multi_gpu=True, n_layers=3, shuffle=True, test_corpus='build_corpus/corpus.test.txt', tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
+$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu
+Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=1024, is_tokenized=False, max_seq_len=32, model_type='LSTM', multi_gpu=True, n_layers=3, shuffle=True, test_corpus=None, tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
 =========MODEL=========
  DataParallelModel(
   (module): LSTMLM(
@@ -164,9 +163,7 @@ Namespace(batch_size=192, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 
 The models were trained with 4 * NVIDIA Tesla V100, and the number of epochs was 10.
 
-### Extrinsic evaluation
-
-#### Perplexity
+### Perplexity
 
 A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
 
@@ -182,12 +179,9 @@ A language model captures the distribution over all sentences. So, the best lang
 
 As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
 
-### Intrinsic evaluation
-
-|Input sentence|Unidirectional-LSTM|
-|------|------|
-|||
-
+|Model|Loss|Perplexity|
+|------|------:|------:|
+|Unidirectional-LSTM|3.4962|33.037|
 
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)

@@ -15,11 +15,12 @@ def argparser():
     p = argparse.ArgumentParser()
 
     # Required parameters
-    p.add_argument('--train_corpus', required=True, type=str)
-    p.add_argument('--test_corpus', required=True, type=str)
-    p.add_argument('--vocab', required=True, type=str)
-    p.add_argument('--model_type', required=True, type=str,
+    p.add_argument('--train_corpus', default=None, type=str, required=True)
+    p.add_argument('--vocab', default=None, type=str, required=True)
+    p.add_argument('--model_type', default=None, type=str, required=True,
                    help='Model type selected in the list: LSTM')
+
+    p.add_argument('--test_corpus', default=None, type=str)
 
     # Input parameters
     p.add_argument('--is_tokenized', action='store_true',
@@ -36,7 +37,7 @@ def argparser():
                    help='Whether CUDA is currently available')
     p.add_argument('--epochs', default=10, type=int,
                    help='Total number of training epochs to perform')
-    p.add_argument('--batch_size', default=192, type=int,
+    p.add_argument('--batch_size', default=512, type=int,
                    help='Batch size for training')
     p.add_argument('--clip_value', default=10, type=int,
                    help='Maximum allowed value of the gradients. The gradients are clipped in the range')
@@ -118,12 +119,17 @@ if __name__=='__main__':
                               vocab=vocab, max_seq_length=config.max_seq_len)
     
     # Build dataloader
-    train_corpus = Corpus(corpus_path=config.train_corpus, tokenizer=tokenizer)   
-    train_loader = DataLoader(dataset=train_corpus,
+    train_loader = DataLoader(dataset=Corpus(corpus_path=config.train_corpus,
+                                             tokenizer=tokenizer),
                               batch_size=config.batch_size,
-                              shuffle=config.shuffle)
-    test_corpus = Corpus(corpus_path=config.test_corpus, tokenizer=tokenizer)   
-    test_loader = DataLoader(dataset=test_corpus, batch_size=config.batch_size)
+                              shuffle=config.shuffle,
+                              drop_last=True)
+    if config.test_corpus:
+        test_loader = DataLoader(dataset=Corpus(corpus_path=config.test_corpus,
+                                                tokenizer=tokenizer),
+                                 batch_size=config.batch_size,
+                                 shuffle=config.shuffle,
+                                 drop_last=True)
 
     # Build model
     if config.model_type=='LSTM':
