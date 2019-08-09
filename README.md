@@ -161,8 +161,6 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 
 ## Evaluation
 
-The models were trained with 4 * NVIDIA Tesla V100, and the number of epochs was 10.
-
 ### Perplexity
 
 A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
@@ -179,9 +177,15 @@ A language model captures the distribution over all sentences. So, the best lang
 
 As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
 
+
+### Results
+
+The models were trained with 8 * NVIDIA Tesla V100, and the number of epochs was 10.
+
 |Model|Loss|Perplexity|
-|------|------:|------:|
-|Unidirectional-LSTM|3.4962|33.037|
+|-|-:|-:|
+|Unidirectional-LSTM|3.496|33.037|
+
 
 ## Reference
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
