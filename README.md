@@ -25,8 +25,23 @@ ELMo, GPT RNNLM are typically the case.
 Because Autoregressive LM should be forward or backward, only one-way(uni-directional) context information can be used.
 Therefore, it's difficult to understand the context in both directions(bi-directional).
 
+### Perplexity
 
-## Build Corpus (Wikipedia)
+A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
+
+`Perplexity`: **_inverse probability of the given sentence, normalized by the number of words._** The reason why for using inverse probability is a way of normalizing for the sentence length.
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
+</p>
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
+</p>
+
+As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
+
+## 1. Build Corpus (Wikipedia)
 Wikipedia regularly distributes the entire document. You can download Korean Wikipedia dump [here](https://dumps.wikimedia.org/kowiki/) (and English Wikipedia dump [here](https://dumps.wikimedia.org/enwiki/)).
 Wikipedia recommends using `pages-articles.xml.bz2`, which includes only the latest version of the entire document, and is approximately 600 MB compressed (for English, `pages-articles-multistream.xml.bz2`).
 
@@ -75,7 +90,7 @@ $ wc -l corpus.train.txt corpus.test.txt
   4277241 합계
 ```
  
-## Preprocessing
+## 2. Preprocessing
 
 ### Build Vocab
 Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030_ words, and _608,221_ unique words. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains **_297,773_** unique words.
@@ -94,7 +109,7 @@ Vocabulary saved to vocab.train.pkl
 Since the vocab file is too large(~1.3GB) to upload on Github, I uploaded it to Google Drive.
 you can download vocab file `vocab.train.pkl` in [here](https://drive.google.com/file/d/195kdXPQtiG0eqppH-L2VKoHAcgqCSR1l/view?usp=sharing).
 
-## Training
+## 3. Training
 
 ```
 $ python lm_trainer.py -h
@@ -139,9 +154,17 @@ optional arguments:
                         Dropout rate used for dropout layer in LSTM
 ```
 
+example:
+```
+$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type LSTM --batch_size 16
+```
+
+You can select your own parameter values via argument inputs. 
+
 ### Training with multiple GPU
 
-Below is the example command for training with multiple GPU. You can select your own parameter values via argument inputs. 
+Training a model with single GPU is not only very slow, it also limits adjusting batch size, model size, and so on.
+To accelerate model training with multiple GPU and use large model, what you have to do is to include `--multi_gpu` flag like belows. For more details, please check [here](https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/parallel.py).
 
 example:
 ```
@@ -159,24 +182,7 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 )
 ```
 
-## Evaluation
-
-### Perplexity
-
-A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
-
-`Perplexity`: **_inverse probability of the given sentence, normalized by the number of words._** The reason why for using inverse probability is a way of normalizing for the sentence length.
-
-<p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
-</p>
-
-<p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
-</p>
-
-As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
-
+## 4. Evaluation
 
 ### Results
 
