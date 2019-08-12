@@ -16,7 +16,7 @@ It is _unsupervised learning_. In this repo, we turn this into a _sequence of su
 
 ### Autoregressive LM
 The Autoregressive language model looks at the previous token and predicts the next token.
-ELMo, GPT RNNLM are typically the case.
+ELMo, GPT, recurrent language model are typically the case.
 
 <br>
 <p align="center">
@@ -43,7 +43,9 @@ A language model captures the distribution over all sentences. So, the best lang
 
 As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
 
-## 1. Build Corpus (Wikipedia)
+## 1. Build Corpus
+
+### Wikipedia
 Wikipedia regularly distributes the entire document. You can download Korean Wikipedia dump [here](https://dumps.wikimedia.org/kowiki/) (and English Wikipedia dump [here](https://dumps.wikimedia.org/enwiki/)).
 Wikipedia recommends using `pages-articles.xml.bz2`, which includes only the latest version of the entire document, and is approximately 600 MB compressed (for English, `pages-articles-multistream.xml.bz2`).
 
@@ -95,7 +97,7 @@ $ wc -l corpus.train.txt corpus.test.txt
 ## 2. Preprocessing
 
 ### Build Vocab
-Our corpus `corpus.shuf.txt`(or `corpus.txt`) has _55,568,030_ words, and _608,221_ unique words. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains **_297,773_** unique words.
+Our corpus `corpus.txt` has 55,568,030 words, and 608,221 unique words. If the minimum frequency needed to include a token in the vocabulary is set to 3, the vocabulary contains **_297,773_** unique words.
 
 Here we use the train corpus `corpus.train.txt` to build vocabulary.
 The vocabulary built by train corpus contains **_557,627_** unique words, and **_271,503_** unique words that appear at least three times.
@@ -108,8 +110,8 @@ Vocabulary size:  271503
 Vocabulary saved to vocab.train.pkl
 ```
 
-Since the vocab file is too large(~1.3GB) to upload on Github, I uploaded it to Google Drive.
-you can download vocab file `vocab.train.pkl` in [here](https://drive.google.com/file/d/195kdXPQtiG0eqppH-L2VKoHAcgqCSR1l/view?usp=sharing).
+Since the vocabulary file is too large(~1.3GB) to upload on this repo, I uploaded it to Google Drive.
+- `vocab.train.pkl` : [[download]](https://drive.google.com/file/d/195kdXPQtiG0eqppH-L2VKoHAcgqCSR1l/view?usp=sharing)
 
 ## 3. Training
 
@@ -196,8 +198,12 @@ The models were trained with 8 * NVIDIA Tesla V100, and the number of epochs was
 
 
 ## Reference
-- [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
-- [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
-, [Issue: How to use the DataParallelCriterion, DataParallelModel](https://github.com/zhanghang1989/PyTorch-Encoding/issues/54)
 - [Google DeepMind] [WaveNet: A Generative Model for Raw Audio](https://deepmind.com/blog/wavenet-generative-model-raw-audio/)
 - [Dan Jurafsky] [CS 124: From Languages to Information at Stanford](https://web.stanford.edu/class/cs124/lec/languagemodeling2019.pdf)
+- [DSKSD] [6. Recurrent Neural Networks and Language Models](https://nbviewer.jupyter.org/github/DSKSD/DeepNLP-models-Pytorch/blob/master/notebooks/06.RNN-Language-Model.ipynb)
+- [yunjey/pytorch-tutorial] [Language Model (RNN-LM)](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model/main.py)
+- [pytorch/examples] [Word-level language modeling RNN](https://github.com/pytorch/examples/tree/master/word_language_model)
+- [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
+- [matthew l][PyTorch Multi-GPU 제대로 학습하기](https://medium.com/daangn/pytorch-multi-gpu-%ED%95%99%EC%8A%B5-%EC%A0%9C%EB%8C%80%EB%A1%9C-%ED%95%98%EA%B8%B0-27270617936b)
+- [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
+, [Issue: How to use the DataParallelCriterion, DataParallelModel](https://github.com/zhanghang1989/PyTorch-Encoding/issues/54)
