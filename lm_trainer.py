@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 from tokenization import Tokenizer, Vocab
 from dataset_utils import Corpus
-from models import LSTMLM
+from models import LSTMLM, BiLSTMLM
 
 def argparser():
     p = argparse.ArgumentParser()
@@ -18,7 +18,7 @@ def argparser():
     p.add_argument('--train_corpus', default=None, type=str, required=True)
     p.add_argument('--vocab', default=None, type=str, required=True)
     p.add_argument('--model_type', default=None, type=str, required=True,
-                   help='Model type selected in the list: LSTM')
+                   help='Model type selected in the list: LSTM, BiLSTM')
 
     p.add_argument('--test_corpus', default=None, type=str)
 
@@ -64,25 +64,23 @@ def train():
     total_loss, total_ppl = 0, 0
     for iter_, batch in enumerate(tqdm(train_loader)):
         inputs, targets = batch
-        if config.cuda:
-            inputs, targets = inputs.cuda(), targets.cuda()
-        # |inputs|, |targets| = (batch_size, max_seq_len-1)
-        
+        # |inputs|, |targets| = (batch_size, seq_len), (batch_size, seq_len)
+
         preds = model(inputs)
-        # |preds| = (batch_size, max_seq_len-1, len(vocab))
-        
+        # |preds| = (batch_size, seq_len, len(vocab))
+
         if config.multi_gpu:
             # If the model run parallelly using DataParallelModel,the output tensor size is as follows.
-            # |preds| = [(batch_size/n_gpus, max_seq_len-1, len(vocab))] * n_gpus
+            # |preds| = [(batch_size/n_gpus, seq_len, len(vocab))] * n_gpus
             n_gpus = len(preds)
-            preds = [pred.view(config.batch_size//n_gpus*(config.max_seq_len-1), -1).contiguous() for pred in preds]
-            # |preds| = [(batch_size/n_gpus*(max_seq_len-1), len(vocab))] * n_gpus
+            preds = [pred.view(-1, len(vocab)).contiguous() for pred in preds]
+            # |preds| = [(batch_size/n_gpus*seq_len, len(vocab))] * n_gpus
         else:
-            preds = preds.view(config.batch_size*(config.max_seq_len-1), -1).contiguous()    
-            # |preds| = (batch_size*(max_seq_len-1), len(vocab))
+            preds = preds.view(-1, len(vocab)).contiguous()    
+            # |preds| = (batch_size*seq_len, len(vocab))
 
         targets = targets.view(-1).contiguous()
-        # |targets| = (batch_size*(max_seq_len-1))
+        # |targets| = (batch_size*seq_len)
         
         loss = loss_fn(preds, targets)
         total_loss += loss.item()
@@ -120,13 +118,17 @@ if __name__=='__main__':
     
     # Build dataloader
     train_loader = DataLoader(dataset=Corpus(corpus_path=config.train_corpus,
-                                             tokenizer=tokenizer),
+                                             tokenizer=tokenizer,
+                                             model_type=config.model_type,
+                                             cuda=config.cuda),
                               batch_size=config.batch_size,
                               shuffle=config.shuffle,
                               drop_last=True)
     if config.test_corpus:
         test_loader = DataLoader(dataset=Corpus(corpus_path=config.test_corpus,
-                                                tokenizer=tokenizer),
+                                                tokenizer=tokenizer,
+                                                model_type=config.model_type,
+                                                cuda=config.cuda),
                                  batch_size=config.batch_size,
                                  shuffle=config.shuffle,
                                  drop_last=True)
@@ -139,6 +141,14 @@ if __name__=='__main__':
                        output_size=len(vocab),
                        n_layers=config.n_layers,
                        dropout_p=config.dropout_p)
+    elif config.model_type=='BiLSTM':
+        model = BiLSTMLM(input_size=len(vocab),
+                         embedding_size=config.embedding_size,
+                         hidden_size=config.hidden_size,
+                         output_size=len(vocab),
+                         n_layers=config.n_layers,
+                         dropout_p=config.dropout_p)
+        
     loss_fn = nn.NLLLoss(ignore_index=vocab.stoi[vocab.pad_token])
     optimizer = optim.Adam(model.parameters())
     
