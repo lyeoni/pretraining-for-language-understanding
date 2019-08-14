@@ -132,7 +132,7 @@ optional arguments:
   --train_corpus TRAIN_CORPUS
   --vocab VOCAB
   --model_type MODEL_TYPE
-                        Model type selected in the list: LSTM
+                        Model type selected in the list: LSTM, BiLSTM
   --test_corpus TEST_CORPUS
   --is_tokenized        Whether the corpus is already tokenized
   --tokenizer TOKENIZER
@@ -198,12 +198,23 @@ The models were trained with 8 * NVIDIA Tesla V100, and the number of epochs was
 
 
 ## Reference
+
 - [Google DeepMind] [WaveNet: A Generative Model for Raw Audio](https://deepmind.com/blog/wavenet-generative-model-raw-audio/)
 - [Dan Jurafsky] [CS 124: From Languages to Information at Stanford](https://web.stanford.edu/class/cs124/lec/languagemodeling2019.pdf)
-- [DSKSD] [6. Recurrent Neural Networks and Language Models](https://nbviewer.jupyter.org/github/DSKSD/DeepNLP-models-Pytorch/blob/master/notebooks/06.RNN-Language-Model.ipynb)
-- [yunjey/pytorch-tutorial] [Language Model (RNN-LM)](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model/main.py)
-- [pytorch/examples] [Word-level language modeling RNN](https://github.com/pytorch/examples/tree/master/word_language_model)
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
+
+### Models
+
+- Unidirectiaonl LSTM LM
+  - [DSKSD] [6. Recurrent Neural Networks and Language Models](https://nbviewer.jupyter.org/github/DSKSD/DeepNLP-models-Pytorch/blob/master/notebooks/06.RNN-Language-Model.ipynb)
+  - [yunjey/pytorch-tutorial] [Language Model (RNN-LM)](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model/main.py)
+  - [pytorch/examples] [Word-level language modeling RNN](https://github.com/pytorch/examples/tree/master/word_language_model)
+
+- Bidirectional LSTM LM
+  - [Mousa, Amr, and Björn Schuller] [Contextual Bidirectional Long Short-Term Memory Recurrent Neural Network Language Models:A Generative Approach to Sentiment Analysis](https://www.aclweb.org/anthology/E17-1096)
+  - [Motoki Wu] [The Bidirectional Language Model](https://medium.com/@plusepsilon/the-bidirectional-language-model-1f3961d1fb27)
+
+### Multi GPU Training
 - [matthew l][PyTorch Multi-GPU 제대로 학습하기](https://medium.com/daangn/pytorch-multi-gpu-%ED%95%99%EC%8A%B5-%EC%A0%9C%EB%8C%80%EB%A1%9C-%ED%95%98%EA%B8%B0-27270617936b)
 - [zhanghang1989/PyTorch-Encoding] [PyTorch-Encoding](https://github.com/zhanghang1989/PyTorch-Encoding)
 , [Issue: How to use the DataParallelCriterion, DataParallelModel](https://github.com/zhanghang1989/PyTorch-Encoding/issues/54)
