@@ -39,8 +39,10 @@ The objective of Autoregressive language model is expressed in a formula as foll
 
 Because Autoregressive language model should be forward or backward, only one-way uni-directional context information can be used. Therefore, it's difficult to understand the context in both directions simultaneously.
 
-RNNLM, ELMo are typically the case, and **Unidirectional/Bidirectional LSTM language models** are covered in this repo.
-cf. Bidirectional LSTM LM, ELMo use context in both directions. However, only shallow understanding is possible beacuase it use contexts that are independently learned in each direction.
+RNNLM, ELMo are typical example of Autoregressive language model, and **Unidirectional/Bidirectional LSTM language models** are covered in this repo.
+
+- cf. Bidirectional LSTM LM, ELMo use context in both directions. However, only shallow understanding is possible beacuase it use contexts that are independently learned in each direction.
+- cf. For a detailed description of the model architecture, refer to the paper/repo in the Reference tab below.
 
 ## 1. Build Corpus
 
