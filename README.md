@@ -4,28 +4,32 @@
 [![GitHub stars](https://img.shields.io/github/stars/lyeoni/pretraining-for-language-understanding?style=flat-square&color=important)](https://github.com/lyeoni/pretraining-for-language-understanding/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/lyeoni/pretraining-for-language-understanding?style=flat-square&color=blueviolet)](https://github.com/lyeoni/pretraining-for-language-understanding/network/members)
 
-Generalized Pre-training for Language Understanding 
+Generalized Pre-training for Language Understanding
 
 ## Overview
-### Language Modeling (LM)
-A language model captures **the distribution over all possible sentences**.
+### Language Model
+A Lanugage Model (LM) captures **the distribution over all possible sentences**.
 - Input : a sentence
 - Output : the probability of the input sentence
 
-It is _unsupervised learning_. In this repo, we turn this into a _sequence of supervised learning_.
+While language modeling is a typical _unsupervised learning_ on large corpus, we turn this into a _sequence of supervised learning_ in this repo.
 
-### Autoregressive LM
-The Autoregressive language model looks at the previous token and predicts the next token.
-ELMo, GPT, recurrent language model are typically the case.
-
-<br>
+#### Autoregressive Language Model
 <p align="center">
 <img width="500" src="https://storage.googleapis.com/deepmind-live-cms/documents/BlogPost-Fig2-Anim-160908-r01.gif" align="middle">
 </p>
-<br>
 
-Because Autoregressive LM should be forward or backward, only one-way(uni-directional) context information can be used.
-Therefore, it's difficult to understand the context in both directions(bi-directional).
+Autoregressive language model captures the distribution over the next token is based on all the previous token. In other words, it looks at the previous token, and predicts the next token. The objective of Autoregressive language model is expressed in a formula as follows:
+
+<p align="center">
+<img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;input\;&space;sentence&space;:&space;x&space;=&space;(x_{1},&space;x_{2},...,&space;x_{t})" title="input\; sentence : x = (x_{1}, x_{2},..., x_{t})" />
+</p>
+
+Because Autoregressive language model should be forward or backward, only one-way uni-directional context information can be used. Therefore, it's difficult to understand the context in both directions simultaneously.
+
+RNNLM, ELMo, GPT are typically the case, and **Unidirectional/Bidirectional LSTM language models** are covered in this repo.
+
+cf. Bidirectional LSTM LM, ELMo use context in both directions. However, only shallow understanding is possible beacuase it use contexts that are independently learned in each direction.
 
 ## 1. Build Corpus
 
@@ -195,7 +199,7 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 
 ### Perplexity
 
-A language model captures the distribution over all sentences. And, the best language model is one that the best predicts an unseen sentence. Perplexty is a very common measurement of how well a probability distribution predicts unseen sentences.
+A language model captures the distribution over all possible sentences. And, the best language model is one that the best predicts an unseen sentence. Perplexty is a very common measurement of how well a probability distribution predicts unseen sentences.
 
 **_Perplexity_** : _inverse probability of the given sentence, normalized by the number of words (by taking geometric mean)_ 
 
