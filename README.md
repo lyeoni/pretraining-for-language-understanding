@@ -15,12 +15,15 @@ A Lanugage Model (LM) captures **the distribution over all possible sentences**.
 While language modeling is a typical _unsupervised learning_ on large corpus, we turn this into a _sequence of supervised learning_ in this repo.
 
 #### Autoregressive Language Model
-<br>
+
 <p align="center">
 <img width="500" src="https://storage.googleapis.com/deepmind-live-cms/documents/BlogPost-Fig2-Anim-160908-r01.gif" align="middle">
 </p>
+<br>
 
-Autoregressive language model captures the distribution over the next token is based on all the previous token. In other words, it looks at the previous token, and predicts the next token. The objective of Autoregressive language model is expressed in a formula as follows:
+Autoregressive language model captures the distribution over the next token is based on all the previous token. In other words, it looks at the previous token, and predicts the next token.
+
+The objective of Autoregressive language model is expressed in a formula as follows:
 
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;input\;&space;sentence&space;:&space;x&space;=&space;(x_{1},&space;x_{2},...,&space;x_{t})" title="input\; sentence : x = (x_{1}, x_{2},..., x_{t})" />
@@ -36,7 +39,7 @@ Autoregressive language model captures the distribution over the next token is b
 
 Because Autoregressive language model should be forward or backward, only one-way uni-directional context information can be used. Therefore, it's difficult to understand the context in both directions simultaneously.
 
-RNNLM, ELMo, GPT are typically the case, and **Unidirectional/Bidirectional LSTM language models are covered in this repo.**
+RNNLM, ELMo are typically the case, and **Unidirectional/Bidirectional LSTM language models are covered in this repo.**
 
 cf. Bidirectional LSTM LM, ELMo use context in both directions. However, only shallow understanding is possible beacuase it use contexts that are independently learned in each direction.
 
