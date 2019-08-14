@@ -195,9 +195,9 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 
 ### Perplexity
 
-A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And, perplexty is a very common measurement of how well a probability distribution predicts unseen sentences.
+A language model captures the distribution over all sentences. And, the best language model is one that the best predicts an unseen sentence. Perplexty is a very common measurement of how well a probability distribution predicts unseen sentences.
 
-Perplexity: _inverse probability of the given sentence, normalized by the number of words (by taking geometric mean)_ 
+**_Perplexity_** : _inverse probability of the given sentence, normalized by the number of words (by taking geometric mean)_ 
 
 <p align="center">
 <img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
