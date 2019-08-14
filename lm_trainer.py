@@ -65,10 +65,10 @@ def train():
     for iter_, batch in enumerate(tqdm(train_loader)):
         inputs, targets = batch
         # |inputs|, |targets| = (batch_size, seq_len), (batch_size, seq_len)
-
+        
         preds = model(inputs)
         # |preds| = (batch_size, seq_len, len(vocab))
-
+        
         if config.multi_gpu:
             # If the model run parallelly using DataParallelModel,the output tensor size is as follows.
             # |preds| = [(batch_size/n_gpus, seq_len, len(vocab))] * n_gpus

@@ -78,12 +78,12 @@ class BiLSTMLM(nn.Module):
         # If bidirectional=True, num_directions is 2, else it is 1.
         # |lstm_out| = (batch_size, max_seq_len, num_directions*hidden_size)
         # |hidden[0]|, |hidden[1]| = (num_layers*num_directions, batch_size, hidden_size)
-        
+
         forward_out = lstm_out[:, :-2, :self.hidden_size]
         backward_out = lstm_out[:, 2:, self.hidden_size:]
         # |forward_out| = (batch_size, max_seq_len-2, hidden_size)
         # |backward_out| = (batch_size, max_seq_len-2, hidden_size)
-        
+
         context = torch.cat((forward_out, backward_out), dim=-1)
         # |context| = (batch_size, max_seq_len-2, 2*hidden_size)
         

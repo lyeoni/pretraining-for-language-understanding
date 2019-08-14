@@ -5,16 +5,16 @@ from torch.utils.data import DataLoader
 
 from tokenization import Tokenizer, Vocab
 from dataset_utils import Corpus
-from models import LSTMLM
+from models import LSTMLM, BiLSTMLM
 
 def argparser():
     p = argparse.ArgumentParser()
 
     # Required parameters
-    p.add_argument('--corpus', required=True, type=str)
-    p.add_argument('--vocab', required=True, type=str)
-    p.add_argument('--model', required=True, type=str)
-    p.add_argument('--model_type', required=True, type=str,
+    p.add_argument('--corpus', default=None, type=str, required=True)
+    p.add_argument('--vocab', default=None, type=str, required=True)
+    p.add_argument('--model', default=None, type=str, required=True)
+    p.add_argument('--model_type', default=None, type=str, required=True,
                    help='Model type selected in the list: LSTM')
     
     # Input parameters
@@ -30,13 +30,13 @@ def argparser():
                    help='Whether to inference with multiple GPU')
     p.add_argument('--cuda', default= True, type=bool,
                    help='Whether CUDA is cureently available')
-    p.add_argument('--batch_size', default=4, type=int,
+    p.add_argument('--batch_size', default=16, type=int,
                    help='Batch size for inference')
 
     # Model parameters
     p.add_argument('--embedding_size', default=256, type=int,
                    help='Word embedding vector dimension')
-    p.add_argument('--hidden_size', default=512, type=int,
+    p.add_argument('--hidden_size', default=1024, type=int,
                    help='Hidden size of LSTM')
     p.add_argument('--n_layers', default=3, type=int,
                    help='Number of layers in LSTM')
@@ -66,9 +66,7 @@ def inference():
     with torch.no_grad():
         for iter_, batch in enumerate(loader):
             inputs, targets = batch
-            if config.cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-            # |inputs|, |targets| = (batch_size, max_seq_len-1)
+            # |inputs|, |targets| = (batch_size, seq_len), (batch_size, seq_len)
 
             preds = model(inputs)
             # |preds| = (batch_size, max_seq_len-1, len(vocab))
@@ -90,9 +88,8 @@ def inference():
                 target_sentences = sentence_from_indexes(target)
                 pred_sentences = sentence_from_indexes(each_topi.squeeze(-1))
                 
-                if target_sentences != pred_sentences:
-                    print('#{} =============='.format(iter_*config.batch_size + i))
-                    print('Actu:\t{}\nPred:\t{}\n'.format(target_sentences, pred_sentences))
+                print('#{} =============='.format(iter_*config.batch_size + i))
+                print('Actu:\t{}\nPred:\t{}\n'.format(target_sentences, pred_sentences))
 
 if __name__=='__main__':
     config = argparser()
@@ -110,7 +107,7 @@ if __name__=='__main__':
                               vocab=vocab, max_seq_length=config.max_seq_len)
 
     # Build dataloader
-    corpus = Corpus(corpus_path=config.corpus, tokenizer=tokenizer)
+    corpus = Corpus(corpus_path=config.corpus, tokenizer=tokenizer, model_type=config.model_type, cuda=config.cuda)
     loader = DataLoader(dataset=corpus, batch_size=config.batch_size)
 
     # Load model with trained parameters
@@ -121,6 +118,14 @@ if __name__=='__main__':
                        output_size=len(vocab),
                        n_layers=config.n_layers,
                        dropout_p=config.dropout_p)
+    elif config.model_type=='BiLSTM':
+        model = BiLSTMLM(input_size=len(vocab),
+                         embedding_size=config.embedding_size,
+                         hidden_size=config.hidden_size,
+                         output_size=len(vocab),
+                         n_layers=config.n_layers,
+                         dropout_p=config.dropout_p)
+
     if config.cuda:
         if config.multi_gpu:
             from parallel import DataParallelModel
