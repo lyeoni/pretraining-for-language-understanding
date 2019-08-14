@@ -15,6 +15,7 @@ A Lanugage Model (LM) captures **the distribution over all possible sentences**.
 While language modeling is a typical _unsupervised learning_ on large corpus, we turn this into a _sequence of supervised learning_ in this repo.
 
 #### Autoregressive Language Model
+<br>
 <p align="center">
 <img width="500" src="https://storage.googleapis.com/deepmind-live-cms/documents/BlogPost-Fig2-Anim-160908-r01.gif" align="middle">
 </p>
@@ -23,6 +24,14 @@ Autoregressive language model captures the distribution over the next token is b
 
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;input\;&space;sentence&space;:&space;x&space;=&space;(x_{1},&space;x_{2},...,&space;x_{t})" title="input\; sentence : x = (x_{1}, x_{2},..., x_{t})" />
+</p>
+
+<p align="center">
+<img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;likelihood&space;:&space;p(X)&space;=&space;p(x_{1})p(x_{2}|x_{1})\cdots&space;p(x_{t}|x_{1},...x_{t-1})&space;=&space;\prod_{t=1}^{T}p(x_{t}|&space;x_{<t})" title="likelihood : p(X) = p(x_{1})p(x_{2}|x_{1})\cdots p(x_{t}|x_{1},...x_{t-1}) = \prod_{t=1}^{T}p(x_{t}| x_{<t})" />
+</p>
+
+<p align="center">
+<img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;objtective:&space;\underset{\theta}{max}\;&space;logp_{\theta}(x)&space;=&space;\underset{\theta}{max}\;&space;\sum_{t=1}^{T}log(p(x_{t}|x_{<t}))" title="objtective: \underset{\theta}{max}\; logp_{\theta}(x) = \underset{\theta}{max}\; \sum_{t=1}^{T}log(p(x_{t}|x_{<t}))" />
 </p>
 
 Because Autoregressive language model should be forward or backward, only one-way uni-directional context information can be used. Therefore, it's difficult to understand the context in both directions simultaneously.
