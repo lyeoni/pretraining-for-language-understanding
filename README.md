@@ -170,7 +170,9 @@ You can select your own parameter values via argument inputs.
 Training a model with single GPU is not only very slow, it also limits adjusting batch size, model size, and so on.
 To accelerate model training with multiple GPU and use large model, what you have to do is to include `--multi_gpu` flag like belows. For more details, please check [here](https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/parallel.py).
 
-example:
+#### Training Unidiretional LSTM Language Model
+This example code train unidirectional-LSTM model on the Wikipedia corpus using parallel training on a server with 8 * V100 GPUs.
+
 ```
 $ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu
 Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=1024, is_tokenized=False, max_seq_len=32, model_type='LSTM', multi_gpu=True, n_layers=3, shuffle=True, test_corpus=None, tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
@@ -186,15 +188,35 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 )
 ```
 
+#### Training Bidirectional LSTM Language Model
+This example code train Bidirectional-LSTM model on the Wikipedia corpus using parallel training on a server with 8 * V100 GPUs.
+
+```
+$ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type BiLSTM --n_layers 1 --multi_gpu
+Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_size=256, epochs=10, hidden_size=1024, is_tokenized=False, max_seq_len=32, model_type='BiLSTM', multi_gpu=True, n_layers=1, shuffle=True, test_corpus=None, tokenizer='mecab', train_corpus='build_corpus/corpus.train.txt', vocab='vocab.train.pkl')
+=========MODEL=========
+ DataParallelModel(
+  (module): BiLSTMLM(
+    (embedding): Embedding(271503, 256)
+    (lstm): LSTM(256, 1024, batch_first=True, dropout=0.2, bidirectional=True)
+    (fc): Linear(in_features=2048, out_features=1024, bias=True)
+    (fc2): Linear(in_features=1024, out_features=512, bias=True)
+    (fc3): Linear(in_features=512, out_features=271503, bias=True)
+    (softmax): LogSoftmax()
+  )
+)
+```
+
 ## 4. Evaluation
 
 ### Results
 
-The models were trained with 8 * NVIDIA Tesla V100, and the number of epochs was 10.
+Perplexty is a very common measurement of how well a probability distribution predicts unseen sentences. A low perplexity indicates that the probability distribution is good at predicting the sentence.
 
 |Model|Loss|Perplexity|
 |-|-:|-:|
 |Unidirectional-LSTM|3.496|33.037|
+|Bidirectional-LSTM|||
 
 
 ## Reference
@@ -205,14 +227,14 @@ The models were trained with 8 * NVIDIA Tesla V100, and the number of epochs was
 
 ### Models
 
-- Unidirectiaonl LSTM LM
-  - [DSKSD] [6. Recurrent Neural Networks and Language Models](https://nbviewer.jupyter.org/github/DSKSD/DeepNLP-models-Pytorch/blob/master/notebooks/06.RNN-Language-Model.ipynb)
-  - [yunjey/pytorch-tutorial] [Language Model (RNN-LM)](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model/main.py)
-  - [pytorch/examples] [Word-level language modeling RNN](https://github.com/pytorch/examples/tree/master/word_language_model)
+#### Unidirectiaonl LSTM LM
+- [DSKSD] [6. Recurrent Neural Networks and Language Models](https://nbviewer.jupyter.org/github/DSKSD/DeepNLP-models-Pytorch/blob/master/notebooks/06.RNN-Language-Model.ipynb)
+- [yunjey/pytorch-tutorial] [Language Model (RNN-LM)](https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/02-intermediate/language_model/main.py)
+- [pytorch/examples] [Word-level language modeling RNN](https://github.com/pytorch/examples/tree/master/word_language_model)
 
-- Bidirectional LSTM LM
-  - [Mousa, Amr, and Björn Schuller] [Contextual Bidirectional Long Short-Term Memory Recurrent Neural Network Language Models:A Generative Approach to Sentiment Analysis](https://www.aclweb.org/anthology/E17-1096)
-  - [Motoki Wu] [The Bidirectional Language Model](https://medium.com/@plusepsilon/the-bidirectional-language-model-1f3961d1fb27)
+#### Bidirectional LSTM LM
+- [Mousa, Amr, and Björn Schuller] [Contextual Bidirectional Long Short-Term Memory Recurrent Neural Network Language Models:A Generative Approach to Sentiment Analysis](https://www.aclweb.org/anthology/E17-1096)
+- [Motoki Wu] [The Bidirectional Language Model](https://medium.com/@plusepsilon/the-bidirectional-language-model-1f3961d1fb27)
 
 ### Multi GPU Training
 - [matthew l][PyTorch Multi-GPU 제대로 학습하기](https://medium.com/daangn/pytorch-multi-gpu-%ED%95%99%EC%8A%B5-%EC%A0%9C%EB%8C%80%EB%A1%9C-%ED%95%98%EA%B8%B0-27270617936b)
