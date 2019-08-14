@@ -27,22 +27,6 @@ ELMo, GPT, recurrent language model are typically the case.
 Because Autoregressive LM should be forward or backward, only one-way(uni-directional) context information can be used.
 Therefore, it's difficult to understand the context in both directions(bi-directional).
 
-### Perplexity
-
-A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And now, the perplexity is the metric that we're going to be using.
-
-`Perplexity`: **_inverse probability of the given sentence, normalized by the number of words._** The reason why for using inverse probability is a way of normalizing for the sentence length.
-
-<p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
-</p>
-
-<p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
-</p>
-
-As you can see from the above equation, the minimizing perplexity is the same as maximizing probability.
-
 ## 1. Build Corpus
 
 ### Wikipedia
@@ -171,7 +155,7 @@ Training a model with single GPU is not only very slow, it also limits adjusting
 To accelerate model training with multiple GPU and use large model, what you have to do is to include `--multi_gpu` flag like belows. For more details, please check [here](https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/parallel.py).
 
 #### Training Unidiretional LSTM Language Model
-This example code train unidirectional-LSTM model on the Wikipedia corpus using parallel training on a server with 8 * V100 GPUs.
+This example code trains unidirectional-LSTM model on the Wikipedia corpus using parallel training on 8 * V100 GPUs.
 
 ```
 $ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type LSTM --multi_gpu
@@ -189,7 +173,7 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 ```
 
 #### Training Bidirectional LSTM Language Model
-This example code train Bidirectional-LSTM model on the Wikipedia corpus using parallel training on a server with 8 * V100 GPUs.
+This example code trains Bidirectional-LSTM model on the Wikipedia corpus using parallel training on 8 * V100 GPUs.
 
 ```
 $ python lm_trainer.py --train_corpus build_corpus/corpus.train.txt --vocab vocab.train.pkl --model_type BiLSTM --n_layers 1 --multi_gpu
@@ -209,18 +193,38 @@ Namespace(batch_size=512, clip_value=10, cuda=True, dropout_p=0.2, embedding_siz
 
 ## 4. Evaluation
 
+### Perplexity
+
+A language model captures the distribution over all sentences. So, the best language model is one that the best predicts an unseen sentences. And, perplexty is a very common measurement of how well a probability distribution predicts unseen sentences.
+
+Perplexity: _inverse probability of the given sentence, normalized by the number of words (by taking geometric mean)_ 
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
+</p>
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
+</p>
+
+As you can see from the above equation, perplexity is defined as the exponentiated negative average log-likelihood. In other words, maximizing probability is the same as minimizing perplexity.
+
 ### Results
 
-Perplexty is a very common measurement of how well a probability distribution predicts unseen sentences. A low perplexity indicates that the probability distribution is good at predicting the sentence.
+And now, perplexity is the metric that we're going to be using.
+A low perplexity indicates that the probability distribution is good at predicting the sentence. 
 
 |Model|Loss|Perplexity|
 |-|-:|-:|
 |Unidirectional-LSTM|3.496|33.037|
 |Bidirectional-LSTM|||
 
+<br>
+
 
 ## Reference
 
+### General
 - [Google DeepMind] [WaveNet: A Generative Model for Raw Audio](https://deepmind.com/blog/wavenet-generative-model-raw-audio/)
 - [Dan Jurafsky] [CS 124: From Languages to Information at Stanford](https://web.stanford.edu/class/cs124/lec/languagemodeling2019.pdf)
 - [attardi/wikiextractor] [WikiExtractor](https://github.com/attardi/wikiextractor)
