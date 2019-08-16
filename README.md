@@ -234,8 +234,8 @@ A low perplexity indicates that the probability distribution is good at predicti
 |Model|Loss|Perplexity|
 |-|-:|-:|
 |Unidirectional-LSTM|3.496|33.037|
-|Bidirectional-LSTM (large, _hidden_ = 1024)|1.771|5.887|
-
+|Bidirectional-LSTM|1.896|6.669|
+|Bidirectional-LSTM-Large (_hidden_size_ = 1024)|1.771|5.887|
 <br>
 
 
