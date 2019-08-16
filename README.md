@@ -4,7 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/lyeoni/pretraining-for-language-understanding?style=flat-square&color=important)](https://github.com/lyeoni/pretraining-for-language-understanding/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/lyeoni/pretraining-for-language-understanding?style=flat-square&color=blueviolet)](https://github.com/lyeoni/pretraining-for-language-understanding/network/members)
 
-Generalized Pre-training of Language Models for Language Understanding
+Pre-training of Language Models for Language Understanding
 
 ## Overview
 ### Language Model
