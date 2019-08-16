@@ -1,10 +1,10 @@
-# Pre-training For Language-Understanding
+# Pre-training For Language Understanding
 [![LICENSE](https://img.shields.io/github/license/lyeoni/pretraining-for-language-understanding?style=flat-square)](https://github.com/lyeoni/pretraining-for-language-understanding/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/lyeoni/pretraining-for-language-understanding?style=flat-square&color=yellow)](https://github.com/lyeoni/pretraining-for-language-understanding/issues)
 [![GitHub stars](https://img.shields.io/github/stars/lyeoni/pretraining-for-language-understanding?style=flat-square&color=important)](https://github.com/lyeoni/pretraining-for-language-understanding/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/lyeoni/pretraining-for-language-understanding?style=flat-square&color=blueviolet)](https://github.com/lyeoni/pretraining-for-language-understanding/network/members)
 
-Generalized Pre-training for Language Understanding
+Generalized Pre-training of Language Models for Language Understanding
 
 ## Overview
 ### Language Model
