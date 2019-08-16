@@ -217,11 +217,11 @@ A language model captures the distribution over all possible sentences. And, the
 **_Perplexity_** : _inverse probability of the given sentence, normalized by the number of words (by taking geometric mean)_ 
 
 <p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
+<img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;PP(W)&space;=&space;P(w_{1},&space;w_{2}...w_{n})^{-\frac{1}{n}}&space;=\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" title="PP(W) = P(w_{1}, w_{2}...w_{n})^{-\frac{1}{n}} =\sqrt[n]{\frac{1}{P(w_{1}w_{2}...w_{N})}}" />
 </p>
 
 <p align="center">
-<img src="https://latex.codecogs.com/gif.latex?\dpi{100}&space;\fn_jvn&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
+<img src="https://latex.codecogs.com/svg.latex?\dpi{100}&space;Chain\;&space;rule:\;&space;PP(W)&space;=&space;\sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" title="Chain\; rule:\; PP(W) = \sqrt[n]{\prod_{i=1}^{N}\frac{1}{P(w_{i}|w_{1}...w_{i-1})}}" />
 </p>
 
 As you can see from the above equation, perplexity is defined as the exponentiated negative average log-likelihood. In other words, maximizing probability is the same as minimizing perplexity.
