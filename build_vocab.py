@@ -6,8 +6,8 @@ def argparser():
     p = argparse.ArgumentParser()
 
     # Required parameters
-    p.add_argument('--corpus', defualt=None, type=str, required=True)
-    p.add_argument('--vocab', defaulte=None, type=str, required=True)
+    p.add_argument('--corpus', default=None, type=str, required=True)
+    p.add_argument('--vocab', default=None, type=str, required=True)
     
     # Other parameters
     p.add_argument('--is_tokenized', action='store_true',
@@ -35,22 +35,22 @@ def main(config):
     
     list_of_tokens = []
     if config.is_tokenized:
-        # read tokens
+        # Read tokens
         with open(config.corpus, 'r', encoding='utf8') as reader:
             for li, line in enumerate(reader):
                 list_of_tokens += line.strip().split()
     else:
-        # select tokenizer
+        # Select tokenizer
         if config.tokenizer=='mecab':
             from konlpy.tag import Mecab
             tokenizer = Tokenizer(tokenization_fn=Mecab().morphs)
 
-        # tokenization & read tokens
+        # Tokenization & read tokens
         with open(config.corpus, 'r', encoding='utf8') as reader:
             for li, line in enumerate(reader):
                 list_of_tokens += tokenizer.tokenize(line.strip())
 
-    # build vocabulary                
+    # Build vocabulary                
     vocab = Vocab(list_of_tokens=list_of_tokens,
                   unk_token=config.unk_token,
                   pad_token=config.pad_token,
@@ -61,7 +61,7 @@ def main(config):
     vocab.build()
     print('Vocabulary size: ', len(vocab))
 
-    # save vocabulary
+    # Save vocabulary
     with open(config.vocab, 'wb') as writer:
         pickle.dump(vocab, writer)
     print('Vocabulary saved to', config.vocab)
