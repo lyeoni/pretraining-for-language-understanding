@@ -5,10 +5,15 @@ from tokenization import Vocab, Tokenizer
 def argparser():
     p = argparse.ArgumentParser()
 
-    p.add_argument('--corpus', required=True)
-    p.add_argument('--vocab', required=True)
-    p.add_argument('--is_tokenized', action='store_true')
-    p.add_argument('--tokenizer', default='mecab')
+    # Required parameters
+    p.add_argument('--corpus', defualt=None, type=str, required=True)
+    p.add_argument('--vocab', defaulte=None, type=str, required=True)
+    
+    # Other parameters
+    p.add_argument('--is_tokenized', action='store_true',
+                   help='Whether the corpus is already tokenized')
+    p.add_argument('--tokenizer', default='mecab', type=str,
+                   help='Tokenizer used for input corpus tokenization')
     p.add_argument('--unk_token', default='<unk>', type=str,
                    help='The representation for any unknown token')
     p.add_argument('--pad_token', default='<pad>', type=str,
