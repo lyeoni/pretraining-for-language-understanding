@@ -4,7 +4,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/lyeoni/pretraining-for-language-understanding?style=flat-square&color=important)](https://github.com/lyeoni/pretraining-for-language-understanding/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/lyeoni/pretraining-for-language-understanding?style=flat-square&color=blueviolet)](https://github.com/lyeoni/pretraining-for-language-understanding/network/members)
 
-Pre-training of Language Models for Language Understanding
+Now, Pre-training of Language Model for Language Understanding is a significant step in the context of NLP.
+
+A language model would be trained on a massive corpus, and then we can use it as a component in other models that need to handle language (e.g. using it for downstream tasks).
 
 ## Overview
 ### Language Model
@@ -12,7 +14,7 @@ A Lanugage Model (LM) captures **the distribution over all possible sentences**.
 - Input : a sentence
 - Output : the probability of the input sentence
 
-While language modeling is a typical _unsupervised learning_ on large corpus, we turn this into a _sequence of supervised learning_ in this repo.
+While language modeling is a typical _unsupervised learning_ on massive corpus, we turn this into a _sequence of supervised learning_ in this repo.
 
 #### Autoregressive Language Model
 
